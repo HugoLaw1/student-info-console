@@ -1,0 +1,534 @@
+prompt PL/SQL Developer import file
+prompt Created on 2017年2月15日 by admin
+set feedback off
+set define off
+prompt Dropping SEC_LOG...
+drop table SEC_LOG cascade constraints;
+prompt Dropping SEC_ROLE...
+drop table SEC_ROLE cascade constraints;
+prompt Dropping SEC_SEX...
+drop table SEC_SEX cascade constraints;
+prompt Dropping SEC_USER...
+drop table SEC_USER cascade constraints;
+prompt Dropping SEC_URMAP...
+drop table SEC_URMAP cascade constraints;
+prompt Creating SEC_LOG...
+create table SEC_LOG
+(
+  id           VARCHAR2(50) not null,
+  context      VARCHAR2(100),
+  created_time TIMESTAMP(6)
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table SEC_LOG
+  add constraint PK_SEC_LOG primary key (ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Creating SEC_ROLE...
+create table SEC_ROLE
+(
+  id               VARCHAR2(50) not null,
+  rolename         VARCHAR2(50) not null,
+  context          VARCHAR2(200),
+  created_time     DATE,
+  last_update_time DATE
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table SEC_ROLE
+  add constraint PK_SEC_ROLE primary key (ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Creating SEC_SEX...
+create table SEC_SEX
+(
+  id               VARCHAR2(50) not null,
+  sexname          VARCHAR2(50) not null,
+  created_time     DATE,
+  last_update_time DATE
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table SEC_SEX
+  add constraint PK_SEC_SEX primary key (ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Creating SEC_USER...
+create table SEC_USER
+(
+  id               VARCHAR2(50) not null,
+  username         VARCHAR2(50) not null,
+  password         VARCHAR2(50) not null,
+  sex              VARCHAR2(20),
+  phone            VARCHAR2(20),
+  status           VARCHAR2(3),
+  remark           VARCHAR2(200),
+  creator          VARCHAR2(50),
+  created_time     DATE,
+  last_update      VARCHAR2(50),
+  last_update_time DATE
+)
+tablespace EXAMPLE
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+alter table SEC_USER
+  add constraint PK_SEC_USER primary key (ID)
+  using index 
+  tablespace EXAMPLE
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Creating SEC_URMAP...
+create table SEC_URMAP
+(
+  userid           VARCHAR2(50) not null,
+  role             VARCHAR2(20) not null,
+  last_update_time DATE
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table SEC_URMAP
+  add constraint PK primary key (USERID, ROLE)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table SEC_URMAP
+  add constraint FK foreign key (USERID)
+  references SEC_USER (ID) on delete cascade;
+
+prompt Disabling triggers for SEC_LOG...
+alter table SEC_LOG disable all triggers;
+prompt Disabling triggers for SEC_ROLE...
+alter table SEC_ROLE disable all triggers;
+prompt Disabling triggers for SEC_SEX...
+alter table SEC_SEX disable all triggers;
+prompt Disabling triggers for SEC_USER...
+alter table SEC_USER disable all triggers;
+prompt Disabling triggers for SEC_URMAP...
+alter table SEC_URMAP disable all triggers;
+prompt Disabling foreign key constraints for SEC_URMAP...
+alter table SEC_URMAP disable constraint FK;
+prompt Loading SEC_LOG...
+insert into SEC_LOG (id, context, created_time)
+values ('b88c2904-8883-48a6-aa2c-48be37c810c5', 'admin登陆系统', to_timestamp('10-02-2017 23:16:00.779000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('d1e0a3cf-8d27-465a-9d8c-29d0849eeff5', 'admin更新了用户9的信息', to_timestamp('10-02-2017 23:16:19.055000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('95cb7f21-4c3d-4889-83c2-cdaa6a3ea9b1', 'admin更新用户9的角色为max', to_timestamp('10-02-2017 23:16:25.869000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('cda1183e-fac3-446e-81c6-a0363c4e099a', 'admin注销了用户11', to_timestamp('10-02-2017 23:16:38.508000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('ea78dac5-aca9-4891-bdfd-f3753eca2dd8', 'admin注销了用户q', to_timestamp('10-02-2017 23:16:44.194000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('473395f6-0521-4bb4-bd83-c4095ee179ef', 'admin注销了用户q', to_timestamp('10-02-2017 23:16:46.520000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('e8a3a892-ed61-4e1d-ac12-b8848672b956', 'admin退出系统', to_timestamp('10-02-2017 23:16:58.064000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('4919e0c8-887b-46b9-9714-2faa332d28cb', '9登陆系统', to_timestamp('10-02-2017 23:17:00.759000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('e14ae584-60f0-4d96-bc20-9fac58f4bd4d', '9退出系统', to_timestamp('10-02-2017 23:17:13.258000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('d19ac62c-5194-45e5-b8c1-0a22ab2fa514', 'admin登陆系统', to_timestamp('10-02-2017 23:17:17.370000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('44930fd3-1976-49eb-bed3-1ac5130afb2e', 'admin更新用户9的角色为super', to_timestamp('10-02-2017 23:17:24.008000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('42932857-4cda-4e57-91ae-5f236d0e759d', 'admin退出系统', to_timestamp('10-02-2017 23:17:30.808000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('581a1e6a-9dac-474c-b23b-5cd7a627be74', '9登陆系统', to_timestamp('10-02-2017 23:17:33.917000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('53d78408-17f3-4f5d-b2b6-8c0b29f136d2', 'admin登陆系统', to_timestamp('12-02-2017 09:39:33.414000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('0d764f24-16ac-4c8f-9f58-f5dbae7747ff', 'admin登陆系统', to_timestamp('12-02-2017 10:58:41.629000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('688012eb-3c6b-45ab-b813-bb7ad22422d3', 'admin更新了用户9的密码', to_timestamp('12-02-2017 10:59:11.777000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('a62a79ce-123f-4a3d-bd46-7854bc2cdf4f', 'admin更新了用户9的密码', to_timestamp('12-02-2017 10:59:27.985000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('49cca2ca-4ec0-48c3-baf0-a72bb7c59cfe', 'admin退出系统', to_timestamp('12-02-2017 11:05:54.915000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('578406e3-38af-49b9-b70c-17d7291e3cb6', '11登陆系统', to_timestamp('12-02-2017 11:05:58.829000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('92c600a8-3170-4c75-a10e-30ab378fb3ae', '11退出系统', to_timestamp('12-02-2017 11:06:06.845000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('d272c982-ccdf-4286-aaed-8fde2c75d561', 'admin登陆系统', to_timestamp('12-02-2017 11:06:11.305000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('cc3e3d8b-deae-488a-bfd4-15c24762051f', 'admin更新了用户9的信息', to_timestamp('12-02-2017 11:08:38.606000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('fdb81733-ab6d-4fa5-8bd9-dbc48d40e9b8', 'admin登陆系统', to_timestamp('12-02-2017 11:11:17.638000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('3ae5a2ce-f795-4c98-9b11-ad93f0f44833', 'admin登陆系统', to_timestamp('12-02-2017 11:19:51.220000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('eb6a9f3e-c775-4aeb-b7e1-7635d229b185', 'admin增加了性别a', to_timestamp('12-02-2017 11:23:08.484000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('b0d66db1-f9f6-48d7-80cc-ff4b6ee1b772', 'admin删除了性别a', to_timestamp('12-02-2017 11:23:13.199000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('7cea4cc5-f687-4a8a-aa37-e5e6f6c40b9d', 'admin登陆系统', to_timestamp('12-02-2017 11:46:38.002000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('4d7c61db-1cee-4e1a-8380-c56afc78a242', 'admin登陆系统', to_timestamp('12-02-2017 11:53:41.609000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('97b2b3f6-3f91-4f9b-8544-71ed48186142', 'admin登陆系统', to_timestamp('13-02-2017 18:10:06.273000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('c7c97863-cbb7-499d-8185-62b080368910', 'admin退出系统', to_timestamp('13-02-2017 18:15:49.809000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('79eb63e1-d449-4dc8-80cb-46359bcc2a02', '9登陆系统', to_timestamp('13-02-2017 18:15:54.746000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('24523ea1-c818-4654-80c6-e5fc87023e67', 'admin登陆系统', to_timestamp('13-02-2017 18:16:22.251000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('5f7de371-883a-47f7-9599-6a9d3c204a60', 'admin更新了角色middle的显示内容', to_timestamp('13-02-2017 18:17:33.882000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('1d1491bb-4172-407b-848e-a30e037337d8', 'admin增加了性别未知', to_timestamp('13-02-2017 18:19:53.291000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('03bc0052-08e1-4ccb-bfec-cacc792c0bcc', 'admin登陆系统', to_timestamp('14-02-2017 10:14:23.684000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('00fb6563-9b21-40e5-8e55-c8c554abc5ae', 'admin更新了用户9的密码', to_timestamp('14-02-2017 10:14:35.059000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('8204c8e1-e940-43c4-bb78-1489cadd7fac', 'admin更新了用户9的密码', to_timestamp('14-02-2017 10:14:42.027000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('07f39c91-bde2-45bd-834c-2a35dd6fa1c6', 'admin登陆系统', to_timestamp('14-02-2017 11:03:02.416000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('295e0342-d07f-4f3b-a41b-268303efc0d2', 'admin登陆系统', to_timestamp('12-02-2017 11:15:08.372000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('d0839823-383b-4860-be29-4450ca3b3639', 'admin更新了用户9的信息', to_timestamp('12-02-2017 11:15:29.465000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('76325a2e-26c7-453b-82c2-cd749f2c3b3b', 'admin登陆系统', to_timestamp('12-02-2017 11:54:20.110000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('241de08d-7273-4e22-aa52-ec3eacabc652', 'admin登陆系统', to_timestamp('14-02-2017 11:02:04.739000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('4ca880e2-22f4-43ff-8998-c52f956b7578', 'admin登陆系统', to_timestamp('14-02-2017 14:45:37.430000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('4dd8f92b-dffd-441b-b86c-b22b14f69ba3', 'admin登陆系统', to_timestamp('14-02-2017 14:47:48.446000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('63a6afcf-67dc-434b-af9c-b53cece5e278', 'admin登陆系统', to_timestamp('14-02-2017 21:22:56.046000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('2d48915f-afc3-4fc2-8f15-3137c6da4e8b', 'admin登陆系统', to_timestamp('15-02-2017 10:40:18.294000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f2445c18-98a2-4bfd-b7b1-6e4cd97c3e50', 'admin登陆系统', to_timestamp('15-02-2017 10:45:25.684000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('23f22870-83dd-41fa-bd0c-e431a8ca72cb', 'admin退出系统', to_timestamp('15-02-2017 10:45:33.908000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('2f3caf98-f2e3-46e4-99d6-2ef5045b14da', '11登陆系统', to_timestamp('15-02-2017 10:45:36.312000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('601f2045-6f3e-4129-8e66-f2be4975f61a', '11退出系统', to_timestamp('15-02-2017 10:45:42.095000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('34082eb6-ffa5-47ca-9ed1-8757c15a997e', 'admin登陆系统', to_timestamp('15-02-2017 11:06:52.550000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('4d12e3d5-4b83-42d5-9d23-9205b8291479', 'admin登陆系统', to_timestamp('15-02-2017 18:45:56.030000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f747b04d-ebbd-4b03-8011-9e1e43f5a372', 'admin登陆系统', to_timestamp('15-02-2017 18:50:09.719000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f259c2d6-7d21-4530-89d9-db5df7b638a1', 'admin删除了性别中性', to_timestamp('15-02-2017 18:50:19.360000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('afcd5a2c-5564-4fe7-9cb5-f8b1f6185bf5', 'admin删除了性别未知', to_timestamp('15-02-2017 18:50:22.986000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('085c4760-576a-45b8-ad3b-cf5d928c01fa', 'admin增加了性别未知', to_timestamp('15-02-2017 18:50:41.045000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('10316b35-d1e5-471b-8df3-ff07a3e56419', 'admin登陆系统', to_timestamp('15-02-2017 18:52:54.942000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('7f84b3ec-e84b-417c-8bb9-58d765dfd7e4', 'admin登陆系统', to_timestamp('15-02-2017 19:01:14.898000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('23966a4c-4543-4994-ac0d-f2dd3327768c', 'admin登陆系统', to_timestamp('15-02-2017 21:30:55.523000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f89b42d6-5df5-48cd-9f83-da88c0ffd3a2', 'admin注销了用户1', to_timestamp('15-02-2017 21:42:37.014000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('2af4a15b-c28d-4ce2-83ed-ab2e33f2ba48', 'admin退出系统', to_timestamp('15-02-2017 21:42:45.419000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f360871e-6645-4f27-b378-905983263ba7', '1登陆系统', to_timestamp('15-02-2017 21:42:49.652000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('7987f3ae-287c-4df2-953a-f9152c9bec2b', '1退出系统', to_timestamp('15-02-2017 21:43:28.348000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('649b45b2-90a8-46e8-a432-8c7b681775dd', 'admin登陆系统', to_timestamp('15-02-2017 21:43:32.701000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('e99db21e-70c8-46ea-bc24-9ddce2591d92', 'admin增加了用户jiang', to_timestamp('15-02-2017 21:44:09.796000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('cc04cab9-b98a-4bba-83c8-4e545a4e27d6', 'admin登陆系统', to_timestamp('14-02-2017 14:43:12.993000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f8f84cbd-78e2-499c-aa3f-08763f8ac735', 'admin登陆系统', to_timestamp('14-02-2017 14:56:15.892000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('9045f78e-b554-4d54-b8fc-234a7b173400', 'admin更新用户11的角色为middle', to_timestamp('14-02-2017 14:56:22.100000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f68557c7-3063-4b42-a33c-f1ac3ae6ff31', 'admin登陆系统', to_timestamp('14-02-2017 14:37:35.359000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('aebff5e0-7d04-4b2c-bf43-0b3f35ae8036', 'admin删除了用户aa', to_timestamp('14-02-2017 14:38:08.435000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f120494a-15fb-43bf-8bee-1928466b4300', 'admin更新用户11的角色为max', to_timestamp('14-02-2017 14:57:21.755000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('e4dbfd3e-dfa8-4bc8-83ad-23fb8a250f28', 'admin删除了角色max', to_timestamp('14-02-2017 14:57:31.125000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('55ea80ec-38a9-44af-902d-53f13e96424a', 'admin登陆系统', to_timestamp('14-02-2017 14:59:03.580000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f238ee52-dd60-4903-a5f2-e00d0a6e819b', 'admin更新用户11的角色为primary', to_timestamp('14-02-2017 14:59:09.183000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('dbb75f37-b81b-4f59-b61a-e8e4c136d5d0', 'admin增加了角色t', to_timestamp('14-02-2017 14:59:19.598000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('8e3088d0-d89d-4f84-8177-9ddba1ab3889', 'admin更新用户11的角色为t', to_timestamp('14-02-2017 14:59:27.510000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('c62be198-04d2-4ba3-842f-4a7212bfb55a', 'admin登陆系统', to_timestamp('14-02-2017 15:08:17.577000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('a50c0b51-9f60-41d0-92e4-64b3be5f44d5', 'admin登陆系统', to_timestamp('14-02-2017 15:14:39.899000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f875b81e-3710-490f-9df6-c1abfde5d2e3', 'admin增加了用户14', to_timestamp('14-02-2017 15:15:32.330000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('ae2d1029-fbbe-4af6-adcb-4e5065ac92be', 'admin增加了用户15', to_timestamp('14-02-2017 15:15:42.019000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('42a7b5a7-49e1-45b1-a59a-edee4dfea787', 'admin更新用户11的角色为mix', to_timestamp('14-02-2017 15:16:31.987000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('8a552026-135c-4b87-9b9e-ed959a08e618', 'admin删除了角色t', to_timestamp('14-02-2017 15:16:37.308000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('a1281041-ded3-4b8d-86b4-aa23af7e0704', 'admin登陆系统', to_timestamp('15-02-2017 10:48:26.405000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('d953fd13-fade-4403-9d43-51647d4b4e82', 'admin更新用户14的角色为middle', to_timestamp('15-02-2017 10:50:11.297000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('5e6be1cf-0cd0-4db9-b8c6-ac307adfe013', 'admin登陆系统', to_timestamp('13-02-2017 09:38:36.039000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('09a11fe9-59a2-48ea-b16d-47b4157a5245', 'admin更新了角色middle的显示内容', to_timestamp('13-02-2017 09:40:17.738000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('1988c98b-8468-41db-8dea-7b4069d78af5', 'admin登陆系统', to_timestamp('13-02-2017 17:12:44.900000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('04f76721-3ab2-4139-9aa5-c620324b5827', 'admin退出系统', to_timestamp('13-02-2017 17:13:05.010000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('5e6af99a-724b-4c54-87f4-164bab8d643f', '11登陆系统', to_timestamp('13-02-2017 17:13:08.088000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('8f2905e8-71b5-48cb-948c-940d07910d91', '11退出系统', to_timestamp('13-02-2017 17:14:42.965000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('72086c17-586c-4eeb-b7a7-81481ae24477', 'admin登陆系统', to_timestamp('13-02-2017 17:14:48.828000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('ca496e43-4c09-41ba-9c75-7489f5d6a6e7', 'admin更新了角色middle的显示内容', to_timestamp('13-02-2017 17:15:25.983000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('8fdc52c5-f799-47e9-a4ad-8eab0171ff22', 'admin退出系统', to_timestamp('13-02-2017 17:16:14.317000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('52c97b95-9f15-438f-8168-8b1119f22ad4', '9登陆系统', to_timestamp('13-02-2017 17:16:23.966000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('890c3190-375f-4431-b7d8-e953c3e36b4f', '9更新用户9的角色为mix', to_timestamp('13-02-2017 17:16:32.647000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('882ec180-df54-4990-8d40-89d38afc4552', '9退出系统', to_timestamp('13-02-2017 17:16:37.086000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('772fe51a-6f49-43fd-87b5-707f7954bc08', '9登陆系统', to_timestamp('13-02-2017 17:16:40.174000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('906e95d2-aae7-4fe9-b4dc-d4beba68ff17', '9退出系统', to_timestamp('13-02-2017 17:17:36.601000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('5de3ec4d-8577-481f-842c-9d8a8e24a73e', 'admin登陆系统', to_timestamp('13-02-2017 17:17:39.733000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('08475754-96ff-4875-9e78-9413756e434a', 'admin登陆系统', to_timestamp('13-02-2017 17:53:43.652000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+commit;
+prompt 100 records committed...
+insert into SEC_LOG (id, context, created_time)
+values ('121fd5c9-d18a-453c-b08f-45d12ba22958', 'admin登陆系统', to_timestamp('15-02-2017 19:06:42.322000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('ac323934-dc0d-48ba-b73b-4658e24a6700', 'admin更新了用户11的信息', to_timestamp('15-02-2017 19:06:49.462000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('e4052eb3-1eae-4af2-ab8c-2d61287ca956', 'admin增加了性别a', to_timestamp('15-02-2017 19:07:02.113000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('13fbade4-3513-4430-a9c6-0867f05deeb5', 'admin删除了性别a', to_timestamp('15-02-2017 19:07:06.080000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('58b0153f-8ab2-490a-8d68-172533f6b762', 'admin增加了性别双性别', to_timestamp('15-02-2017 19:07:24.584000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('b143d491-efd4-4d9a-a0f3-9c4bd606e7f6', 'admin删除了性别双性别', to_timestamp('15-02-2017 19:07:34.251000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('e245ab05-298b-416f-b499-14d24f2795b5', 'admin登陆系统', to_timestamp('11-02-2017 14:36:45.624000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('a31e68fb-c52a-4385-8729-aeb624c2e160', 'admin登陆系统', to_timestamp('14-02-2017 11:06:08.567000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('aa4bf52b-c077-4203-a7fc-35fd5f010d87', 'admin退出系统', to_timestamp('11-02-2017 14:46:54.845000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('5af92aa8-0454-42ba-88f8-f2f70f18341b', 'admin登陆系统', to_timestamp('14-02-2017 10:22:06.290000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('95a15f38-f3bb-4606-9b46-300d4fb98fd0', 'admin登陆系统', to_timestamp('14-02-2017 11:07:24.073000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('f9811fd4-bb72-4fb5-9243-cc9f1cb5440b', 'admin登陆系统', to_timestamp('14-02-2017 11:09:05.348000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+insert into SEC_LOG (id, context, created_time)
+values ('ef53ed4f-5de8-4498-bff4-f74bcbfc04bd', 'admin增加了角色t', to_timestamp('14-02-2017 11:09:14.683000', 'dd-mm-yyyy hh24:mi:ss.ff'));
+commit;
+prompt 113 records loaded
+prompt Loading SEC_ROLE...
+insert into SEC_ROLE (id, rolename, context, created_time, last_update_time)
+values ('2d955fcd-9a91-4ff4-8c97-84a7f3b48cb8', 'middle', '1,2,4,6', to_date('06-02-2017 20:03:18', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-02-2017 18:17:33', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_ROLE (id, rolename, context, created_time, last_update_time)
+values ('9a67ebdc-115a-4c34-be34-5f7c7507be6c', 'mix', '4,5', to_date('06-02-2017 20:03:31', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-02-2017 20:03:31', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_ROLE (id, rolename, context, created_time, last_update_time)
+values ('1373ff4c-9f7b-4508-9375-1f1e71ab2d98', 'super', '1,2,3,4,5,6,7', to_date('03-02-2017 01:44:07', 'dd-mm-yyyy hh24:mi:ss'), to_date('10-02-2017 22:25:08', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_ROLE (id, rolename, context, created_time, last_update_time)
+values ('e93e85fc-ecd6-41ca-ad8b-b4d66f5d4a7f', 't', null, to_date('14-02-2017 11:09:14', 'dd-mm-yyyy hh24:mi:ss'), to_date('14-02-2017 11:09:14', 'dd-mm-yyyy hh24:mi:ss'));
+commit;
+prompt 4 records loaded
+prompt Loading SEC_SEX...
+insert into SEC_SEX (id, sexname, created_time, last_update_time)
+values ('1', '男', to_date('21-01-2017', 'dd-mm-yyyy'), to_date('21-01-2017', 'dd-mm-yyyy'));
+insert into SEC_SEX (id, sexname, created_time, last_update_time)
+values ('2', '女', to_date('21-01-2017', 'dd-mm-yyyy'), to_date('21-01-2017', 'dd-mm-yyyy'));
+insert into SEC_SEX (id, sexname, created_time, last_update_time)
+values ('d4c7c184-883c-47dd-9b1f-1a9e8850234c', '未知', to_date('15-02-2017 18:50:40', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-02-2017 18:50:40', 'dd-mm-yyyy hh24:mi:ss'));
+commit;
+prompt 3 records loaded
+prompt Loading SEC_USER...
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('ee7da315-6864-4802-ab43-5f496fa2c95b', '11', 'ZRK9Q9nKpuAsmQsKgmUtyg==', '未知', '15602110718', '001', '111111111111111111111111', null, to_date('10-02-2017 19:21:25', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('15-02-2017 19:06:49', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('c41bb0c3-4491-438b-9c98-d19aff08b43e', 'jiang', '47VqKZv6tJteZMigH+OsqQ==', '男', '15602110718', '002', '111111111111111111111', null, to_date('15-02-2017 21:44:09', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('15-02-2017 21:44:09', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('1', 'admin', 'ISMvKXpXpadDiUoOSoAfww==', '男', '15521145421', '001', '我的id是1', '1', to_date('21-01-2017', 'dd-mm-yyyy'), null, to_date('08-02-2017 20:34:34', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('c62c235f-779a-45ee-b19e-e35349c049f5', '14', 'qrMjiSK8wlpvYG61Jf/cVg==', '男', '15602110718', '002', '1', null, to_date('14-02-2017 15:15:32', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('14-02-2017 15:15:32', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('198ea05c-8fbc-40b3-bf46-e560b1815d8b', '15', 'm/Mcf/Bik2qW08i9H48v8w==', '女', '15602110716', '002', '1', null, to_date('14-02-2017 15:15:42', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('14-02-2017 15:15:42', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('fefeba0d-1c34-4753-a526-5ba06890626f', 'q', 'dpT0pmMW5TyM3Z2ZVL1hHQ==', '男', '15602110718', '002', '11111111111111', null, to_date('04-02-2017 21:42:53', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('10-02-2017 23:16:46', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('ba399a09-d4d1-4537-8053-a9b402c33792', '1', 'xMpCOKC5I4INzFCab3WEmw==', '女', '15602110718', '001', '大家好啊，我是1', null, to_date('06-02-2017 00:53:53', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('15-02-2017 21:42:36', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('91194dbd-bbbf-4989-b92c-dccb6287076a', '2', 'yB5yjZ1ML2NvBn+JzBSGLA==', '女', '15602110718', '002', '嘿嘿嘿', null, to_date('06-02-2017 00:54:02', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('08-02-2017 20:33:14', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('8b569316-29d0-487b-bcdd-e64b7772dd3c', '3', '7MvIfktc4v4oMI/Z8qe68w==', '女', '15602110718', '002', '今天开黑了吗', null, to_date('06-02-2017 00:54:12', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('08-02-2017 20:33:37', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('3fb1db85-4ad4-492c-a142-e77a80769019', '4', 'qH/2eaLz5x2RgaZ7dUISLA==', '女', '15602110718', '002', '安全管理系统', null, to_date('06-02-2017 00:54:21', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('08-02-2017 20:34:45', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('50d561ce-3800-48b4-97fb-046c334ef352', '5', '5No7f7vOI0XXdysGdKMY1Q==', '男', '15602110718', '002', '很好用', null, to_date('06-02-2017 00:54:57', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('08-02-2017 20:34:55', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('03a69578-c184-4ac7-b1de-647169e52679', '6', 'FnkJHFqID69vteYIfrGy3A==', '女', '15602230711', '002', '11111111111111111111111', null, to_date('06-02-2017 00:55:07', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('06-02-2017 00:55:07', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('75b36c24-bfff-416f-ab2c-a59609a1c3ac', '7', 'jxTkX87qFnpaNt7dS+olQw==', '男', '15602110718', '002', '111111111111111111111', null, to_date('06-02-2017 00:55:18', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('06-02-2017 00:55:18', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_USER (id, username, password, sex, phone, status, remark, creator, created_time, last_update, last_update_time)
+values ('c846f7e5-1c22-4f76-9a71-e039413fdd04', '8', 'yfD4lfuYq5FZ9R/QKX4jbQ==', '女', '15602110718', '002', '111111111111111', null, to_date('06-02-2017 00:55:34', 'dd-mm-yyyy hh24:mi:ss'), null, to_date('06-02-2017 00:55:34', 'dd-mm-yyyy hh24:mi:ss'));
+commit;
+prompt 14 records loaded
+prompt Loading SEC_URMAP...
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('c41bb0c3-4491-438b-9c98-d19aff08b43e', 'primary', to_date('15-02-2017 21:44:09', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('ee7da315-6864-4802-ab43-5f496fa2c95b', 'mix', to_date('14-02-2017 15:16:31', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('1', 'super', to_date('08-02-2017 20:34:34', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('fefeba0d-1c34-4753-a526-5ba06890626f', 'primary', to_date('10-02-2017 23:16:46', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('ba399a09-d4d1-4537-8053-a9b402c33792', 'primary', to_date('08-02-2017 20:33:02', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('91194dbd-bbbf-4989-b92c-dccb6287076a', 'primary', to_date('08-02-2017 20:33:14', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('8b569316-29d0-487b-bcdd-e64b7772dd3c', 'primary', to_date('08-02-2017 20:33:37', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('3fb1db85-4ad4-492c-a142-e77a80769019', 'primary', to_date('08-02-2017 20:34:45', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('50d561ce-3800-48b4-97fb-046c334ef352', 'primary', to_date('08-02-2017 20:34:55', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('03a69578-c184-4ac7-b1de-647169e52679', 'primary', to_date('06-02-2017 00:55:07', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('75b36c24-bfff-416f-ab2c-a59609a1c3ac', 'primary', to_date('06-02-2017 00:55:18', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('c846f7e5-1c22-4f76-9a71-e039413fdd04', 'primary', to_date('06-02-2017 00:55:34', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('c62c235f-779a-45ee-b19e-e35349c049f5', 'middle', to_date('15-02-2017 10:50:11', 'dd-mm-yyyy hh24:mi:ss'));
+insert into SEC_URMAP (userid, role, last_update_time)
+values ('198ea05c-8fbc-40b3-bf46-e560b1815d8b', 'primary', to_date('14-02-2017 15:15:42', 'dd-mm-yyyy hh24:mi:ss'));
+commit;
+prompt 14 records loaded
+prompt Enabling foreign key constraints for SEC_URMAP...
+alter table SEC_URMAP enable constraint FK;
+prompt Enabling triggers for SEC_LOG...
+alter table SEC_LOG enable all triggers;
+prompt Enabling triggers for SEC_ROLE...
+alter table SEC_ROLE enable all triggers;
+prompt Enabling triggers for SEC_SEX...
+alter table SEC_SEX enable all triggers;
+prompt Enabling triggers for SEC_USER...
+alter table SEC_USER enable all triggers;
+prompt Enabling triggers for SEC_URMAP...
+alter table SEC_URMAP enable all triggers;
+set feedback on
+set define on
+prompt Done.

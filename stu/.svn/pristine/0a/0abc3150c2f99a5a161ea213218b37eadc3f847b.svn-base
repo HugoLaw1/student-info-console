@@ -1,0 +1,268 @@
+package seehope.dao;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.map.HashedMap;
+
+import seehope.db.DBUtil;
+import seehope.model.SexModel;
+import seehope.security.SecurityContext;
+
+public class SexDao {
+	
+	public static boolean deleteSex(String[] ids) {
+		boolean result = false;
+		String sql = "DELETE FROM SEC_SEX WHERE ID = ?";
+		try {
+			Connection conn = DBUtil.getInstance().getConnection();
+			conn.setAutoCommit(false);
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			for (String id : ids) {
+				
+				SexModel sex = SexDao.getSexById(id);
+				
+				if(UserDao.hasSex(sex.getSexname()))
+					continue;
+				
+				stmt.setString(1, id);
+				stmt.addBatch();
+				LogDao.addLog(SecurityContext.getCurrentUser().getUsername()+"删除了性别"+SexDao.getSexById(id).getSexname());
+			}
+			int[] c = stmt.executeBatch();
+			conn.commit();
+			if (c.length > 0) {
+				result = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * 获取所有的角色数据
+	 * 
+	 * @return
+	 */
+	public static List<SexModel> getSexs() {
+		List<SexModel> list = new LinkedList<SexModel>();
+		Connection conn = DBUtil.getInstance().getConnection();
+		String sql = "SELECT * FROM SEC_SEX U ";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				String id = rs.getString("ID");
+				String sexname = rs.getString("SEXNAME");
+				Date createdTime = rs.getDate("CREATED_TIME");
+				Date lastUpdateTime = rs.getDate("LAST_UPDATE_TIME");
+				SexModel sex = new SexModel();
+				sex.setId(id);
+				sex.setSexname(sexname);
+				sex.setCreatedTime(createdTime);
+				sex.setLastUpdateTime(lastUpdateTime);
+				list.add(sex);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.getInstance().close(rs, stmt);
+		}
+		return list;
+	}
+
+	/**
+	 * 获取所有的角色数据总量
+	 * 
+	 * @return
+	 */
+	public static int getSexsMapCount(Map param) {
+		int count = 0;
+		Connection conn = DBUtil.getInstance().getConnection();
+		String sql = "SELECT COUNT(1) FROM SEC_SEX U";
+		String sSearch = (String) param.get("sSearch");
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.prepareStatement(sql);
+			if(sSearch!=null&&!sSearch.trim().equals("")){
+				sql = "SELECT COUNT(1) FROM SEC_SEX WHERE SEXNAME=?";
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, sSearch.trim());
+			}
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.getInstance().close(rs, stmt);
+		}
+		return count;
+	}
+
+	/**
+	 * 获取所有的角色数据
+	 * 
+	 * @return
+	 */
+	public static List<Map> getSexsMap(Map param) {
+		List<Map> list = new LinkedList<Map>();
+		Connection conn = DBUtil.getInstance().getConnection();
+		String sql = "SELECT * FROM SEC_SEX";
+		String sSearch = (String) param.get("sSearch");
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.prepareStatement(sql);
+			if(sSearch!=null&&!sSearch.trim().equals("")){
+				sql = "SELECT * FROM SEC_SEX WHERE SEXNAME=?";
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, sSearch.trim());
+			}
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				String id = rs.getString("ID");
+				String sexname = rs.getString("SEXNAME");
+				Date createdTime = rs.getDate("CREATED_TIME");
+				Date lastUpdateTime = rs.getDate("LAST_UPDATE_TIME");
+				
+				Map m = new HashedMap();
+				m.put("id", id);
+				m.put("sexname", sexname);
+				m.put("createdTime", createdTime);
+				m.put("lastUpdateTime", lastUpdateTime);
+				list.add(m);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.getInstance().close(rs, stmt);
+		}
+		//System.out.println(list);
+		return list;
+	}
+
+	/**
+	 * 新增角色
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public static boolean addSex(SexModel sex) {
+		if(SexDao.hasSex(sex.getSexname()))
+			return false;
+		
+		boolean result = false;
+		String sql = "INSERT INTO SEC_SEX (ID,SEXNAME,CREATED_TIME,LAST_UPDATE_TIME)"
+				+ "VALUES(?,?,SYSDATE,SYSDATE)";
+		Connection conn = DBUtil.getInstance().getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, sex.getId());
+			stmt.setString(2, sex.getSexname());
+			int c = stmt.executeUpdate();
+			if (c > 0) {
+				LogDao.addLog(SecurityContext.getCurrentUser().getUsername()+"增加了性别"+sex.getSexname());
+				result = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public static SexModel getSexById(String id) {
+		SexModel sex = null;
+		Connection conn = DBUtil.getInstance().getConnection();
+		String sql = "SELECT * FROM SEC_SEX U WHERE U.ID = ?";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, id);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				String sexname = rs.getString("SEXNAME");
+				Date createdTime = rs.getDate("CREATED_TIME");
+				Date lastUpdateTime = rs.getDate("LAST_UPDATE_TIME");
+				sex = new SexModel();
+				sex.setId(id);
+				sex.setSexname(sexname);
+				sex.setCreatedTime(createdTime);
+				sex.setLastUpdateTime(lastUpdateTime);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.getInstance().close(rs, stmt);
+		}
+		return sex;
+	}
+	
+	public static SexModel getSex(String sexname) {
+		
+		
+		
+		SexModel sex = null;
+		Connection conn = DBUtil.getInstance().getConnection();
+		String sql = "SELECT * FROM SEC_SEX U WHERE U.SEXNAME = ? ";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, sexname);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				String id = rs.getString("ID");
+				sexname = rs.getString("SEXNAME");
+				Date createdTime = rs.getDate("CREATED_TIME");
+				Date lastUpdateTime = rs.getDate("LAST_UPDATE_TIME");
+				sex = new SexModel();
+				sex.setId(id);
+				sex.setSexname(sexname);
+				sex.setCreatedTime(createdTime);
+				sex.setLastUpdateTime(lastUpdateTime);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.getInstance().close(rs, stmt);
+		}
+		return sex;
+	}
+	
+	
+	public static boolean hasSex(String sexname) {
+		
+		Connection conn = DBUtil.getInstance().getConnection();
+		String sql = "SELECT * FROM SEC_SEX U WHERE U.SEXNAME = ? ";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, sexname);
+			rs = stmt.executeQuery();
+			if(rs.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.getInstance().close(rs, stmt);
+		}
+		return false;
+	}
+	
+	
+}

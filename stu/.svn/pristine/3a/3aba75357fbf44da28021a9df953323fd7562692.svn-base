@@ -1,0 +1,109 @@
+var dataTableParam = {};
+$(function() {
+	initDataTable();
+})
+
+
+
+/* 删除 */
+function del(id) {
+	layer.confirm('确认要删除吗？', function(index) {
+		$.ajax({
+			"type" : 'get',
+			"url" : Global.contextPath + '/LogController/deleteLog.do',
+			"dataType" : "json",
+			"data" : {
+				"ids" : id
+			},
+			"success" : function(data) {
+				// console.log(data);
+				if (data.code == '001') {
+					table.fnDraw(false);// 刷新表格数据false为当前页数，true为刷新到第一页
+					layer.msg('已删除!', {
+						icon : 1,
+						time : 1000
+					});
+				} else {
+					layer.msg('操作失败!', {
+						icon : 1,
+						time : 1000
+					});
+				}
+			}
+		});
+
+	});
+}
+/* 批量删除 */
+function datasDelete() {
+	var obj = $("input[name^='checkbox_']:checked");
+	if (obj.length == 0) {
+		layer.msg('请最少选择一条记录！', {
+			icon : 1,
+			time : 1000
+		});
+		return;
+	}
+	var values = [];
+	for (var i = 0; i < obj.length; i++) {
+		// console.log(obj[i]);
+		values.push(obj[i].value);
+	}
+	var ids = values.join(",");
+	$.ajax({
+		"type" : 'get',
+		"url" : Global.contextPath + '/LogController/deleteLog.do',
+		"dataType" : "json",
+		"data" : {
+			"ids" : ids
+		},
+		"success" : function(data) {
+			// console.log(data);
+			if (data.code == '001') {
+				table.fnDraw(false);// 刷新表格数据false为当前页数，true为刷新到第一页
+				layer.msg('已删除!', {
+					icon : 1,
+					time : 1000
+				});
+			} else {
+				layer.msg('操作失败!', {
+					icon : 1,
+					time : 1000
+				});
+			}
+		}
+	});
+}
+function initDataTable() {
+	table = $('.table-sort')
+			.dataTable(
+					{
+						"bPaginate" : true,// 分页按钮
+						"bFilter" : false,// 搜索栏
+						"bLengthChange" : true,// 每行显示记录数
+						"iDisplayLength" : 10,// 每页显示行数
+						"bProcessing" : true,
+						"bSort" : false,// 排序
+						"sPaginationType" : "full_numbers", // 分页，一共两种样式
+						// 另一种为two_button //
+						// 是datatables默认
+						"bServerSide" : true,// 服务端传分页table参数
+						"aoColumns" : [// 表格数据填充
+								 {
+									"mDataProp" : "context",
+									"sClass" : "text-c",
+								}, {
+									"mDataProp" : "createdTime",
+									"sClass" : "text-c",
+								}
+								
+
+						],
+						"sAjaxSource" : Global.contextPath
+								+ '/DataTableController/getData.do',
+						"fnServerData" : function(sSource, aoData, fnCallback) {
+							$.dataTableService('LogService$getAllLogByPage',
+									aoData, dataTableParam, fnCallback);
+						}
+					});
+}

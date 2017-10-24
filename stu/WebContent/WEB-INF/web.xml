@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<display-name>security.console</display-name>
+	<!-- filer按顺序 -->
+	<filter>
+		<filter-name>encode</filter-name>
+		<filter-class>seehope.filter.EncodeFilter</filter-class>
+		<init-param>
+			<param-name>code</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encode</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+<!-- 	<filter>
+		<filter-name>security</filter-name>
+		<filter-class>seehope.filter.SecurityFilter</filter-class>
+		<init-param>
+			<param-name>ignorePattern</param-name>
+			<param-value>*.ttf|*.woff|*.svg|*.eot|/common/*|*.css|*.js|*.png|*.jpg|/LoginController/*</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>security</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping> -->
+
+	<servlet>
+		<servlet-name>file</servlet-name>
+		<servlet-class>seehope.servlet.FileServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>file</servlet-name>
+		<url-pattern>/file/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>main</servlet-name>
+		<servlet-class>seehope.servlet.MainServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>main</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>/portal/default/index.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>

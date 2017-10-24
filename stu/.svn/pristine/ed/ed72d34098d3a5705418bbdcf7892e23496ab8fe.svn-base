@@ -1,0 +1,42 @@
+package seehope.service.impl;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import seehope.dao.LogDao;
+import seehope.model.ResultModel;
+import seehope.model.LogModel;
+
+public class LogService {
+	public ResultModel deleteLog(String[] ids) {
+		if(LogDao.deleteLog(ids)){
+			return new ResultModel("001","删除成功！");
+		}
+		return new ResultModel("000","删除失败！");
+	}
+
+	
+
+	
+
+	public ResultModel getLogById(String id) {
+		LogModel log = LogDao.getLogById(id);
+		ResultModel result = new ResultModel("001", log);
+		return result;
+	}
+
+	public ResultModel getAllLog() {
+		List<LogModel> logs = LogDao.getLogs();
+		return new ResultModel("001", logs);
+	}
+	
+	public List<Map> getAllLogByPage(Map param) {
+		return LogDao.getLogsMap(param);
+	}
+
+	public int getAllLogByPageCount(Map param) {
+		return LogDao.getLogsMapCount(param);
+	}
+
+}

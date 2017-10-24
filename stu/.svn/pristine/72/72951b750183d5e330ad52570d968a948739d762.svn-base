@@ -1,0 +1,54 @@
+package seehope.service.impl;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import seehope.dao.SexDao;
+import seehope.model.ResultModel;
+import seehope.model.SexModel;
+
+public class SexService {
+	public ResultModel deleteSex(String[] ids) {
+		if(SexDao.deleteSex(ids)){
+			return new ResultModel("001","删除成功！");
+		}
+		return new ResultModel("000","删除失败！");
+	}
+
+	public ResultModel addSex(SexModel sex) {
+		
+		sex.setId(UUID.randomUUID().toString());
+		if (!SexDao.addSex(sex)) {
+			return new ResultModel("000", "新增性别失败！");
+		}
+		return new ResultModel("001", "新增性别成功！",sex);
+		
+		
+	}
+
+	
+
+	public ResultModel getSexById(String id) {
+		SexModel sex = SexDao.getSexById(id);
+		ResultModel result = new ResultModel("001", sex);
+		return result;
+	}
+
+	public ResultModel getAllSex() {
+		List<SexModel> sexs = SexDao.getSexs();
+		return new ResultModel("001", sexs);
+	}
+	
+	public List<Map> getAllSexByPage(Map param) {
+		return SexDao.getSexsMap(param);
+	}
+
+	public int getAllSexByPageCount(Map param) {
+		return SexDao.getSexsMapCount(param);
+	}
+
+	public SexModel getSexModel(String sexname) {
+		return SexDao.getSex(sexname);
+	}
+}

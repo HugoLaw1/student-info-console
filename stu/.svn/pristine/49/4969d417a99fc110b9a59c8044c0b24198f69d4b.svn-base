@@ -1,0 +1,139 @@
+var dataTableParam = {};
+$(function() {
+	initDataTable();
+})
+/* 添加 */
+function member_add(title, url, w, h) {
+	layer_show(title, url, w, h);
+}
+
+
+/* 删除 */
+function del(id) {
+	layer.confirm('确认要删除吗？', function(index) {
+		$.ajax({
+			"type" : 'get',
+			"url" : Global.contextPath + '/SexController/deleteSex.do',
+			"dataType" : "json",
+			"data" : {
+				"ids" : id
+			},
+			"success" : function(data) {
+				// console.log(data);
+				if (data.code == '001') {
+					table.fnDraw(false);// 刷新表格数据false为当前页数，true为刷新到第一页
+					layer.msg('已删除!', {
+						icon : 1,
+						time : 1000
+					});
+				} else {
+					layer.msg('操作失败!', {
+						icon : 2,
+						time : 1000
+					});
+				}
+			}
+		});
+
+	});
+}
+/* 批量删除 */
+function datasDelete() {
+	var obj = $("input[name^='checkbox_']:checked");
+	if (obj.length == 0) {
+		layer.msg('请最少选择一条记录！', {
+			icon : 1,
+			time : 1000
+		});
+		return;
+	}
+	var values = [];
+	for (var i = 0; i < obj.length; i++) {
+		// console.log(obj[i]);
+		values.push(obj[i].value);
+	}
+	var ids = values.join(",");
+	$.ajax({
+		"type" : 'get',
+		"url" : Global.contextPath + '/SexController/deleteSex.do',
+		"dataType" : "json",
+		"data" : {
+			"ids" : ids
+		},
+		"success" : function(data) {
+			// console.log(data);
+			if (data.code == '001') {
+				table.fnDraw(false);// 刷新表格数据false为当前页数，true为刷新到第一页
+				layer.msg('已删除!', {
+					icon : 1,
+					time : 1000
+				});
+			} else {
+				layer.msg('操作失败!', {
+					icon : 1,
+					time : 1000
+				});
+			}
+		}
+	});
+}
+function initDataTable() {
+	table = $('.table-sort')
+			.dataTable(
+					{
+						"bPaginate" : true,// 分页按钮
+						"bFilter" : true,// 搜索栏
+						"bLengthChange" : true,// 每行显示记录数
+						"iDisplayLength" : 10,// 每页显示行数
+						"bProcessing" : true,
+						"bSort" : false,// 排序
+						"sPaginationType" : "full_numbers", // 分页，一共两种样式
+						// 另一种为two_button //
+						// 是datatables默认
+						"bServerSide" : true,// 服务端传分页table参数
+						"aoColumns" : [// 表格数据填充
+								{
+									"mDataProp" : "id",
+									"sClass" : "text-c",
+									"mRender" : function(data, type, full) {
+										var html = '<input type="checkbox" value="'
+												+ data
+												+ '" title="'
+												+ data
+												+ '" id="checkbox_'
+												+ data
+												+ '" name="checkbox_'
+												+ data
+												+ '" />';
+										return html;
+									}
+
+								}, {
+									"mDataProp" : "sexname",
+									"sClass" : "text-c",
+								}
+								
+
+						],
+						"columnDefs" : [// 后加载填充自定义列内容
+						{
+							"targets" : [ 2 ],
+							"data" : "id",
+							"sClass" : "text-c",
+							"mRender" : function(data, type, full) {
+								var html = '';
+	                 			html += '<a style="text-decoration: none" class="ml-5" onClick="del(\''+data+'\')" href="javascript:;" title="删除">';
+	                 			html += '<i class="Hui-iconfont">&#xe6e2;</i></a>';
+								return html;
+							}
+						}
+
+						],
+						"sAjaxSource" : Global.contextPath
+								+ '/DataTableController/getData.do',
+						"fnServerData" : function(sSource, aoData, fnCallback) {
+							$.dataTableService('SexService$getAllSexByPage',
+									aoData, dataTableParam, fnCallback);
+						}
+					});
+}

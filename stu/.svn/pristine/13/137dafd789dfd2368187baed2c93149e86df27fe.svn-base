@@ -1,0 +1,57 @@
+package seehope.controller;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+
+import seehope.model.ResultModel;
+import seehope.model.SexModel;
+import seehope.service.impl.SexService;
+
+public class SexController {
+	
+
+	public void addOrEditSex(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String id = request.getParameter("id");
+		if (id != null && !id.equals("")) {
+			// 如果id不为空，则查询数据库，获取ID对应的用户
+			SexService sexService = new SexService();
+			request.setAttribute("sex", sexService.getSexById(id).getData());
+		}
+		request.getRequestDispatcher("/module/sex/sex-add.jsp").forward(request, response);
+	}
+
+	public void addSex(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String sex = request.getParameter("sex");
+//		System.out.println("sex:"+sex);
+		Gson g = new Gson();
+		SexModel sexModel = g.fromJson(sex, SexModel.class);
+		SexService sexService = new SexService();
+		ResultModel result = null;
+		result = sexService.addSex(sexModel);
+		
+		result.sendData(response);
+	}
+
+	public void deleteSex(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String ids = request.getParameter("ids");
+		SexService sexService = new SexService();
+		String[] idsArg = ids.split(",");
+		ResultModel result = sexService.deleteSex(idsArg);
+		result.sendData(response);
+	}
+
+	public void getAllSex(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		SexService sexService = new SexService();
+		ResultModel result = sexService.getAllSex();
+		result.sendData(response);
+	}
+}
