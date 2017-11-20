@@ -23,6 +23,12 @@ public class RoleDao {
 	 * @param id
 	 * @return
 	 */
+	/**
+	 * 根据ID删除指定的角色
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public static boolean deleteRole(String[] ids) {
 		
 		
