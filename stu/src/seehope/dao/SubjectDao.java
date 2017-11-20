@@ -174,7 +174,6 @@ public class SubjectDao {
 		}
 		return false;
 	}
-
 	
 	public static boolean hasSubjectByName(String sub_name) {
 		Connection conn = DBUtil.getInstance().getConnection();
