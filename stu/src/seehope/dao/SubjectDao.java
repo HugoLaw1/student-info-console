@@ -122,8 +122,7 @@ public class SubjectDao {
 //		}
 //		if(SubjectDao.hasSubjectByName(subject.getSub_name())){
 //			return result = "004";
-//		}
-		
+//		
 		if(!SubjectDao.hasSubjectByName(subject.getSub_pre())){
 			return result = "004";
 		}
