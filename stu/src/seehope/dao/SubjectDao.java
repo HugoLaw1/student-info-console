@@ -49,6 +49,7 @@ public class SubjectDao {
 		return result;
 	}
 	
+	
 	/**
 	 * 获取学生
 	 */
@@ -320,5 +321,4 @@ public class SubjectDao {
 		}
 		return list;
 	}
-
 }
