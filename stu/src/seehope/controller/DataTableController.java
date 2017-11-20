@@ -12,6 +12,8 @@ import seehope.util.JsonTools;
 
 public class DataTableController {
 
+
+
 	public void getTableListForPage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String aoData = request.getParameter("aoData");
