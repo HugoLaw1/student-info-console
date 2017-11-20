@@ -219,7 +219,6 @@ public class SubjectDao {
 			key = two[0];
 			content = two[1];
 		}
-
 		try {
 			stmt = conn.prepareStatement(sql);
 			if (key != null && !key.trim().equals("") && content != null && !content.trim().equals("")
